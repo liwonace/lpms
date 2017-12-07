@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add gnupg key for codership repo
+    apt-key: keyserver=keyserver.ubuntu.com id=BC19DDBA
+
+  - name: add Mapbox repo
+    apt_repository: repo='deb http://ubuntu-cloud.archive.canonical.com/{{ansible_distribution|lower}}{{ansible_distribution_release}}-updates/liberty main' state=present

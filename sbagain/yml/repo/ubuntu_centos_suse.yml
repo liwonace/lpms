@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for centos 6.7
+    yum_repository:
+      name: pms_centos
+      description: pms yum repo
+      #baseurl: http://192.168.7.52/repo/CentOS/6/7
+      baseurl: http://10.10.10.1/repo/CentOS/6/7
+      #baseurl: http://192.168.7.52/repo
+      async: 0
+
+  - name: add pms repo for Ubuntu
+    apt_repository: 
+      repo: deb http://192.168.7.52/repo/Ubuntu/Ubuntu16.04 xenial main
+      state: present
+      filename: 'pms_ubuntu_repo'    
+
+  - name: add pms repo for Suse
+    zypper_repository:
+      name: pms_SuSE42.3
+      description: pms repo SuSE42.3
+      #baseurl: http://192.168.7.52/repo/SuSE/SuSE42.3
+      repo: http://192.168.7.52/repo/SuSE/SuSE42.3     

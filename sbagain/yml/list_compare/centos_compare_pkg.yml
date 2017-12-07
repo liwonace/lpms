@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: compare package
+      shell: rpm -qa | grep xorg-x11-xauth
+      register: result
+      
+    - name: compare package 2
+      shell: 'yum check-update | grep xorg-x11-xauth' 
+      register: result2
+
+    - debug:
+        msg="{{ result.stdout, result2.stdout }}"
+        #msg="{{ result2.stdout }}"    
+          

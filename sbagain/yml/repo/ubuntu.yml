@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  - name: Add an apt key by id from a keyserver
+    apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 36A1D7869245C8950F966E92D8576A8BA88D21E9

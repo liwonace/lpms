@@ -1,0 +1,11 @@
+- hosts: all
+  tasks:
+     - name: apt-get clean
+       shell: apt-get clean
+       become: true
+       become_user: root
+
+     - name: apt-get update
+       shell: apt-get update
+       become: true
+       become_user: root          

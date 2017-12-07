@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: Add repository
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      async: 0
+
+  - name: add Mapbox repo
+    apt_repository: repo='ppa:developmentseed/mapbox' state=present update_cache=yes
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    async: 0

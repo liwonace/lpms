@@ -1,0 +1,19 @@
+- hosts: all
+  become: true
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - apt: name={{ item }} state=latest
+    with_items:
+     - ntp
+     - wget
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - yum: name={{ item }} state=latest
+    with_items:
+     - ntp
+     - wget
+    when: ansible_distribution == 'CentOS'
+
+  - service: name=ntpd state=started enabled=yes

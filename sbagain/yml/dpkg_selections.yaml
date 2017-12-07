@@ -1,0 +1,5 @@
+# Prevent python from being upgraded.
+- hosts: web
+- dpkg_selections:
+    name: python
+    selection: hold

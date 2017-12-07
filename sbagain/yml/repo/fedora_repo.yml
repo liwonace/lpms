@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for Fedora19
+    yum_repository:
+      name: pms_fedora19
+      description: pms yum repo fedora19
+      baseurl: http://192.168.7.52/repo/Fedora/Fedora19
+      baseurl: http://10.10.10.1/repo/Fedora/Fedora19
+      #baseurl: http://192.168.7.52/repo
+      async: 0

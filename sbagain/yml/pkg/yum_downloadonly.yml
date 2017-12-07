@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: yum downloadonly
+      command: >
+        yum install
+          --downloadonly
+          --downloaddir=/usr/local/src/
+          -y
+          vim
+          ntp
+          wget
+          unzip
+          vsftpd

@@ -1,0 +1,19 @@
+- hosts: all
+  tasks:
+  - name: Installing useful packages
+    apt:
+      name: "{{ item }}"
+      #update_cache: yes
+      #cache_valid_time: 7200
+      state: present
+    with_items:
+        - udev
+        - efibootmgr
+        - crda   
+        - ntp
+        - wget
+        - unzip
+        - vsftpd
+        - kimwitu
+        - kgb
+        - kgamma        

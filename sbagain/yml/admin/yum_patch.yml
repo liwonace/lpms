@@ -1,0 +1,18 @@
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - copy:
+        src: /home/repo/copy/zip-3.0-1.el6.x86_64.rpm
+        dest: /usr/local/src/zip-3.0-1.el6.x86_64.rpm
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Install rpm
+      command: >
+        rpm
+          -Uvh
+          /usr/local/src/zip-3.0-1.el6.x86_64.rpm

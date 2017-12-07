@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - yum: name=vim state=latest
+#- yum: name=$item state=latest update_cache=yes
+#    with_items:
+#     - xfsprogs.x86_64
+#when: ansible_distribution == 'CentOS'

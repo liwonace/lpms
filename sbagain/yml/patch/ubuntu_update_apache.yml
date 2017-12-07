@@ -1,0 +1,7 @@
+- hosts:
+    - all
+  tasks:
+    - name: ensure package cache is up to date
+      action: apt update_cache=yes cache_valid_time=3600
+    - name: install web server
+      action: apt pkg=apache2 state=present

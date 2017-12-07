@@ -1,0 +1,2 @@
+apt_repository: repo='deb-src http://archive.canonical.com/ubuntu hardy partner' state=present
+

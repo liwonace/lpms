@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: apt downloadonly
+      command: >
+        apt-get download
+          vim
+          ntp
+          wget
+          unzip
+          vsftpd

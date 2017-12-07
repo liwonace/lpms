@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for Ubuntu
+    apt_repository: 
+      repo: deb http://dl.google.com/linux/chrome/deb/ stable main 
+      state: present
+      filename: 'google-chrome'     

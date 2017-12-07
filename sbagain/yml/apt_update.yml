@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: apt update
+      shell: 'apt update'
+      register: apt_update
+
+    - debug: msg="{{apt_update.stdout}}"

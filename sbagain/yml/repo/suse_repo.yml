@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for Suse
+    zypper_repository:
+      name: pms_SuSE42.3
+      description: pms repo SuSE42.3
+      #baseurl: http://192.168.7.52/repo/SuSE/SuSE42.3
+      #repo: http://192.168.7.52/repo/SuSE/SuSE42.3
+      repo: http://10.10.10.1/repo/SuSE/SuSE42.3

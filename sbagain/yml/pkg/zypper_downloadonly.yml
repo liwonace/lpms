@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: zypper downloadonly
+      command: >
+        zypper install
+          --download-only
+          -y
+          vim
+          ntp
+          wget
+          unzip
+          vsftpd

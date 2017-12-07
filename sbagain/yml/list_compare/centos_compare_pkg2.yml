@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: compare package
+      shell: rpm -qa | grep wget
+      register: result
+      
+      shell: 'yum check-update | grep wget'
+      register: result2
+
+    - debug:
+        msg="{{ result.stdout result2.stdout}}"
+          

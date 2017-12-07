@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - apt: name=$item state=latest update_cache=yes
+    with_items:
+     - ntp
+     - vim
+    ansible_ssh_port: 8022
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - yum: name=$item state=latest update_cache=yes
+    with_items:
+     - ntp 
+     - vim
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+  - service: name=ntpd state=started enabled=yes

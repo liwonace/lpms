@@ -1,0 +1,11 @@
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: Install Multiple Packages
+      yum: name={{item}} state=downgrade
+      with_items:
+        - wget.x86_64
+        - tar.x86_64 

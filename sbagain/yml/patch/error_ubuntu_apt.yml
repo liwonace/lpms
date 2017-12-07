@@ -1,0 +1,38 @@
+  - hosts: all
+    user: root
+    gather_facts: False
+  vars:
+        pfile: /var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_trusty-updates_main_binary-amd64_Packages
+        #pfile: /var/lib/apt/lists/*Packages
+  tasks:
+
+        - name: fix the cache
+          shell: apt-get update
+          ignore_errors: true
+          with_sequence: count=2
+          become: true
+
+        - name: screw up a package file
+          shell: head -n 100000 /dev/urandom >> {{ pfile }}
+          become: true
+
+        #- name: fix the cache
+        #  shell: apt-get update
+        #  ignore_errors: True
+        #  with_sequence: count=2
+        #  become: true
+
+        - name: check if the cache is broken
+          shell: apt-cache search vim
+          ignore_errors: true
+          become: true
+          register: cache_check
+
+        - name: make sure the cache is broken
+          assert:
+                that:
+                        - 'cache_check.rc != 0'
+
+        - name: Update apt cache.
+          apt: update_cache=true
+          become: true

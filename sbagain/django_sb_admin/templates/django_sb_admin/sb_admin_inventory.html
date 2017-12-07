@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<head>
+{% extends "django_sb_admin/base.html" %}{% load static %}{% block sb_admin_title %}Inventory{% endblock sb_admin_title %}{% block sb_admin_subheading %}{% endblock sb_admin_subheading %}
+{% block sb_admin_breadcrumb %}<i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>{% endblock sb_admin_breadcrumb %}
+ {% block sb_admin_breadcrumb_active %}
+ <li class="active">
+      <i class="fa fa-edit""></i> Inventory
+ </li>
+ {% endblock sb_admin_breadcrumb_active %}
+ {% block sb_admin_content %}  
+
+</head>
+<body>
+<div class="row">
+<div class="col-lg-6">
+	<form role="form" form method="POST">
+		{% csrf_token %}
+
+		<div class="form-group">
+			<label>SSH IP Input</label>
+			<input class="form-control" name="ip">
+			<p class="help-block">Client IP text here.</p>
+		</div>
+
+		<div class="form-group">
+			<label>SSH Port Input</label>
+			<input class="form-control" placeholder="Enter 
+text" name="port">
+			<p class="help-block">Client Port text here.</p>
+		</div>
+
+		<div class="form-group">
+			<label>Session Name Input</label>
+			<input class="form-control" placeholder="Enter text What you want to save" name="session">
+			<p class="help-block">Session Name text here.</p>
+		</div>
+		
+		<div class="form-group">
+			<label>User Input</label>
+			<input class="form-control" placeholder="Enter text " name="sshuser">
+			<p class="help-block">SSH User text here</p>
+		</div>
+
+		<div class="form-group">
+			<label>Password Input</label>
+			<input class="form-control" type="password" placeholder="Enter text(Not saved just for Initialized) " name="sshpw">
+			<p class="help-block">SSH Password text here</p>
+		</div>
+
+		<div class="form-group">
+			<label>Static Control</label>
+			<p class="form-control-static">SSH Connnection</p>
+		</div>
+
+
+		<div class="form-group">
+			<label>Selects Group</label>
+			<select class="form-control" name="group">
+			{% for group in group_list %}
+				<option>{{ group.name }}</option>
+			{% endfor %}									
+			</select>
+		</div>
+
+		<button type="submit" class="btn btn-default" value="Submit"
+		name="submitbtn">Submit Button</button>
+		<button type="reset" class="btn btn-default">Reset Button</button>
+		<button type="button" class="btn btn-default"
+		data-toggle="modal" data-target="#MyModal">Check
+		OS</button>
+		<div id="MyModal" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<div>
+				  <button type="button" class="close"
+				  data-dismiss="modal">&times;</button>
+				</div>
+			  </div>
+			  <div class="modal-body">Body</div>
+			  <div class="modal-footer">
+				<button type="button" class="btn
+				btn-default" data-dismiss="modal">Close</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	</form>
+</div>
+
+<div class="col-lg-6">
+  <label>Agent User Table</label>
+  <div class="table-responsive">
+	 <table class="table table-bordered table-hover table-striped">
+	   <thead>
+		 <tr>
+			<th>Host</th>
+			<th>Session Name</th>
+			<th>port</th>
+			<th>enabled</th>
+		 </tr>
+	   </thead>
+	 <tbody>
+	   {% for host in host_list %}
+		 <tr>
+		   <td>{{ host.host }}</td>
+		   <td>{{ host.hostname }}</td>
+		   <td>{{ host.variables}}</td>
+		   <td>{{ host.enabled}}</td>
+		 </tr>
+	   {% endfor %}
+	 </tbody>
+	</table>
+  <label>Group User Table</label>
+  <div class="table-responsive">
+	 <table class="table table-bordered table-hover table-striped">
+	   <thead>
+		 <tr>
+			<th>Group Name, Host, Session Name, Host Variable</th>
+		 </tr>
+	   </thead>
+	 <tbody>
+	   {% for inventory in inventory_list %}
+		 <tr>
+		   <td>{{ inventory }}</td>
+		 </tr>
+	   {% endfor %}
+	 </tbody>
+	</table>
+</div>
+
+	<form method="POST">
+	{% csrf_token %}						
+	<!--div class="form-group">
+		<label>Selects Group</label>
+		<select class="form-control" name="groupselect">
+		{% for group in group_list %}
+			<option value=groupp>{{ group.name }}</option>
+		{% endfor %}									
+		</select>
+	</div>
+	<div class="form-group">
+		<label>Host list</label>
+		<select multiple class="form-control"
+		name="selecthost">
+		{% for host in host_list %}
+			<option>{{ host.host }}</option>
+		{% endfor %}									
+		</select>
+	</div-->
+	<div class="form-group">
+		<label>New Group Input</label>
+		<input class="form-control" name="groupname">
+		<p class="help-block">Group Name text here.</p>
+	</div>
+
+    <input type="submit" value="Create Group"
+	name="groupbtn" id="start_submit" class="btn btn-default"/>
+	<!--button type="reset" class="btn btn-default">Change Group</button!-->
+	</form>
+	</div>
+</div>
+{% endblock sb_admin_content %}
+</body>
+</html>

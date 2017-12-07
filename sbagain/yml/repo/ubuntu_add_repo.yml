@@ -1,0 +1,16 @@
+---
+- hosts: ubuntu
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+#- name: add gnu pg key
+#   apt-key: 
+#       keyserver: keyserver.ubuntu.com 
+#        id: BC19DDBA
+
+# - name: add repo
+#    apt_repository: repo='deb http://ubuntu-cloud.archive.canonical.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release }}-updates/liberty main' state=present
+    apt_repository: repo='deb http://archive.canonical.com/ubuntu hardy partner' state=present list=archive
+...    

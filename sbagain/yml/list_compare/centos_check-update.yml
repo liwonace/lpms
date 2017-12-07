@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: yum check-update
+      shell: 'yum check-update'
+      register: update_yum
+      ignore_errors: True
+
+    - debug: msg="{{update_yum.stdout_lines}}"

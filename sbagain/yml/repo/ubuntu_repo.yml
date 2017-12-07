@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for Ubuntu
+    apt_repository: 
+      #repo: deb http://192.168.7.52/repo/Ubuntu/Ubuntu16.04 xenial main
+      repo: deb http://10.10.10.1/repo/Ubuntu/Ubuntu16.04 xenial main
+      state: present
+      filename: 'pms_ubuntu_repo'     

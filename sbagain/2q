@@ -1,0 +1,258 @@
+from django.shortcuts import render
+from django_sb_admin.models import *
+from django.db.models import Count
+import socket
+import os
+import subprocess
+
+def start(request):
+    """Start page with a documentation.
+    """
+    return render(request, "django_sb_admin/start.html",
+                  {"nav_active":"start"})
+
+def dashboard(request):
+    """Dashboard page.
+    """
+    return render(request, "django_sb_admin/sb_admin_dashboard.html",
+                  {"nav_active":"dashboard"})
+
+def charts(request):
+    """Charts page.
+    """
+    return render(request, "django_sb_admin/sb_admin_charts.html",
+                  {"nav_active":"charts"})
+def tables(request):
+    """Tables page.
+    """
+    return render(request, "django_sb_admin/sb_admin_tables.html",
+                  {"nav_active":"tables"})
+def forms(request):
+    """Forms page.
+    """
+    return render(request, "django_sb_admin/sb_admin_forms.html",
+                  {"nav_active":"forms"})
+def bootstrap_elements(request):
+    """Bootstrap elements page.
+    """
+    return render(request, "django_sb_admin/sb_admin_bootstrap_elements.html",
+                  {"nav_active":"bootstrap_elements"})
+def bootstrap_grid(request):
+    """Bootstrap grid page.
+    """
+    return render(request, "django_sb_admin/sb_admin_bootstrap_grid.html",
+                  {"nav_active":"bootstrap_grid"})
+def dropdown(request):
+    """Dropdown  page.
+    """
+    return render(request, "django_sb_admin/sb_admin_dropdown.html",
+                  {"nav_active":"dropdown"})
+def rtl_dashboard(request):
+    """RTL Dashboard page.
+    """
+    return render(request, "django_sb_admin/sb_admin_rtl_dashboard.html",
+                  {"nav_active":"rtl_dashboard"})
+
+def blank(request):
+    """Blank page.
+    """
+    return render(request, "django_sb_admin/sb_admin_blank.html",
+                  {"nav_active":"blank"})
+
+
+def inventory(request):
+    """Blank page.
+    """
+    import sys
+    from packages.sshcopyid import SshCopy
+    group_list = Group.objects.all()
+    host_list = Host.objects.all()	
+		
+    if(request.GET.get('mybtn')):
+        print("mybtn!!")
+        #cSSH = SshCopy(user, host,passwd, port)
+        #cSSH = SshCopy(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        cSSH.send()
+        		
+    if(request.GET.get('selecthost')):
+        selid=request.GET.get('selecthost')
+        print("ahahaha")
+        print(selid)
+        #selectedhostid=Host.objects.filter(host=selid).values('variables')[0]	
+        selectedhostid=Host.objects.filter(host=selid)
+        #print(selectedhostid)
+        for info in selectedhostid:
+            print(info.variables)
+            selectedport=info.variables
+
+        #os.system("python")			
+        ## 이런 식으로플레이ㅂ북을 정의 해서 			
+        cmd='ansible-playbook -i /root/sbagain/ansible-dyninv-mysql/mysql.py ~/ansible-python/yml/check-update.yml --limit '
+        #cmd=cmd + '192.168.7.221'
+        cmd=cmd + selid
+        print(cmd)
+        #os.system(cmd)	
+        #os.system('ansible-playbook -i /root/sbagain/ansible-dyninv-mysql/mysql.py ~/ansible-python/yml/check-update.yml --limit 192.168.7.221')			
+        
+		
+    if(request.GET.get('runbtn')):
+        runhost=request.POST.get('selecthost', False)
+        print("runbtn!!")
+        
+        print(runhost)
+        return render(request, 'django_sb_admin/sb_admin_inventory.html',
+            {"group_list": group_list, "host_list": host_list})
+
+
+
+    if request.method == 'POST':
+        # check vaild IP or not	  
+        ip=request.POST.get('ip', False)
+        session=request.POST.get('session', False)
+        sshuser=request.POST.get('sshuser', False)
+        try:
+            if(ip == False):
+                return render(request, 'django_sb_admin/sb_admin_inventory.html',
+                {"group_list": group_list, "host_list": host_list})
+            socket.inet_aton(ip)
+        except socket.error:
+            print("invalid IP") 		
+            #return render(request, "django_sb_admin/sb_admin_inventory.html",
+            #      {"nav_active":"blank"})
+            return render(request, 'django_sb_admin/sb_admin_inventory.html',
+                {"group_list": group_list, "host_list": host_list})
+        		
+        port=request.POST.get('port', False)
+        print(port)	    
+        if port == False:
+            print(port) 		
+            print("1") 		
+            jsonport= '{X}'
+        elif port != "" and port != False:
+            jsonport= '{"ansible_ssh_port": "' + port  +'"}'    	   
+            print(jsonport) 		
+            print("2") 		
+        else: 
+            jsonport= '{}'
+            print("3") 		
+			
+        print(sshuser)
+        sshpw=request.POST.get('sshpw', False)
+        # print(sshpw)
+        # Input ssh key
+        #cSSH = SshCopy(user, host,passwd, port)
+        print("start ssh copy")	
+        print(sshuser, ip, sshpw, port) 		
+        cSSH = SshCopy(sshuser, ip, sshpw, port)
+        try:
+            cSSH.send()
+        except:
+            print("except ssh key send")	
+        #print(returncopy)	
+        try:
+            # run the 		
+            cmd='ansible ' + ip + ' -i /root/sbagain/ansible-dyninv-mysql/mysql.py -u root -m setup | grep ansible_distribution'
+            print(cmd)			
+            #os.system(cmd)	
+            result = subprocess.call(cmd, shell=True)	
+            print(result)	
+            Host.objects.create(host=ip, hostname=session, variables=jsonport,
+				enabled=1)
+            print("4") 		
+            oneofhostid=Host.objects.filter(host=ip).values('id')[0]	
+            print("5") 		
+            groupname=request.POST.get('group', False)	
+            print("6") 		
+            oneofgroupid=Group.objects.filter(name=groupname).values('id')[0]
+            print("7") 		
+            Hostgroups.objects.create(host_id=oneofhostid['id'],
+				group_id=oneofgroupid['id'])
+            print("8") 		
+        except:
+            print("except insert db")
+	
+        # DB에서 각host id와 groupid를 가져와서 입력하여야 한다.	
+        #oneofgroupid=Group.objects.filter(name=groupname).values('id').annotate(num=Count('id'))
+        #oneofgroupid=Group.objects.annotate(num=Count('id'))
+        #oneofhostid=Host.objects.filter(host=ip).values('id')	
+        #oneofhostid=Host.objects.annotate(numhost=Count('id'))
+        #return render(request, "django_sb_admin/sb_admin_inventory.html",
+        #         {"nav_active":"blank"})
+        return render(request, 'django_sb_admin/sb_admin_inventory.html',
+            {"group_list": group_list, "host_list": host_list})
+    """ 
+    elif request.method == 'GET':
+        group_list = Group.objects.all()
+        host_list = Host.objects.all()	
+
+        return render(request, 'django_sb_admin/sb_admin_inventory.html',
+            {"group_list": group_list, "host_list": host_list})
+    """
+    #return render(request, "django_sb_admin/sb_admin_inventory.html",                         
+    #              {"nav_active":"blank"})
+    return render(request, 'django_sb_admin/sb_admin_inventory.html',
+            {"group_list": group_list, "host_list": host_list})
+
+	
+def playbook(request):
+    """playbook page.
+    """
+    import sys
+    from packages.sshcopyid import SshCopy
+    group_list = Group.objects.all()
+    host_list = Host.objects.all()	
+    #inventory_list = inventory.objects.all() 
+
+    if(request.GET.get('mybtn')):
+
+        selid=request.GET.get('selecthost')
+        print(selid)
+        #selectedhostid=Host.objects.filter(host=selid).values('variables')[0]	
+        selectedhostid=Host.objects.filter(host=selid)
+        #print(selectedhostid)
+        for info in selectedhostid:
+            print(info.variables)
+            selectedport=info.variables
+			
+        print("mybtn!!")
+        #cSSH = SshCopy(user, host,passwd, port)
+        #cSSH = SshCopy(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        cSSH.send()
+
+    if(request.GET.get('updatebtn')):
+        print("updatebtn!!")
+        runhost=request.POST.get('selecthost', False)
+        print(runhost)
+        return render(request, 'django_sb_admin/sb_admin_playbook.html',
+            {"group_list": group_list, "host_list": host_list})
+
+    if(request.GET.get('selecthost')):
+        selid=request.GET.get('selecthost')
+        print(selid)
+        #selectedhostid=Host.objects.filter(host=selid).values('variables')[0]	
+        selectedhostid=Host.objects.filter(host=selid)
+        #print(selectedhostid)
+        for info in selectedhostid:
+            print(info.variables)
+            selectedport=info.variables
+
+        #os.system("python")			
+        ## 이런 식으로플레이ㅂ북을 정의 해서 			
+        cmd='ansible-playbook -i /root/sbagain/ansible-dyninv-mysql/mysql.py ~/ansible-python/yml/check-update.yml --limit '
+        #cmd=cmd + '192.168.7.221'
+        cmd=cmd + selid
+        print(cmd)
+        #os.system(cmd)	
+        #os.system('ansible-playbook -i /root/sbagain/ansible-dyninv-mysql/mysql.py ~/ansible-python/yml/check-update.yml --limit 192.168.7.221')			
+		
+
+
+    if(request.GET.get('patchbtn')):
+        runhost=request.POST.get('selecthost', False)
+        print("patchbtn!!")
+        print(runhost)
+        return render(request, 'django_sb_admin/sb_admin_playbook.html',
+            {"group_list": group_list, "host_list": host_list})
+        		
+    return render(request, 'django_sb_admin/sb_admin_playbook.html',
+            {"group_list": group_list, "host_list": host_list})

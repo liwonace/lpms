@@ -1,0 +1,14 @@
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: Install Multiple Packages
+      yum: name={{item}} state=latest
+      with_items:
+        - vim.x86_64
+        - ntp.x86_64 
+        - wget.x86_64 
+        - unzip.x86_64 
+        - vsftpd.x86_64 

@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - apt: name={{ item }} state=latest
+    with_items:
+     - ntp
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - yum: name={{ item }} state=latest
+    with_items:
+     - ntp
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

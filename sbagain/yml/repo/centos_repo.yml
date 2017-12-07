@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for centos 6.7
+    yum_repository:
+      name: pms_centos
+      description: pms yum repo
+      #baseurl: http://192.168.7.52/repo/CentOS/6/7
+      baseurl: http://10.10.10.1/repo/CentOS/6/7
+      async: 0

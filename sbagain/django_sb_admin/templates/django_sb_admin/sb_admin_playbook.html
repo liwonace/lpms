@@ -1,0 +1,91 @@
+{% extends "django_sb_admin/base.html" %}{% load static %}{% block sb_admin_title %}Playbook{% endblock sb_admin_title %}{% block sb_admin_subheading %}{% endblock sb_admin_subheading %}
+{% block sb_admin_breadcrumb %}<i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>{% endblock sb_admin_breadcrumb %}
+ {% block sb_admin_breadcrumb_active %}
+ <li class="active">
+      <i class="fa fa-edit""></i> Playbook
+ </li>
+ {% endblock sb_admin_breadcrumb_active %}
+ {% block sb_admin_content %}  
+ <div class="row">
+	<div class="col-lg-6">
+		<form method="GET">
+		{% csrf_token %}						
+			<div class="form-group">
+				<label>Host list</label>
+				<select multiple class="form-control"
+				name="selecthost">
+				{% for host in host_list %}
+					<option>{{ host.host }}</option>
+				{% endfor %}									
+				</select>
+			</div>
+
+			<div class="form-group">
+            <button type="submit" class="btn btn-default" name="osbtn" value="osbtn">Check OS</button>
+			<input type="submit" value="Update repository"
+			name="pkgbtn" id="start_submit" class="btn btn-default"/>
+			<input type="submit" value="Download package"
+			name="downpkgbtn" id="start_submit" class="btn btn-default"/>
+			<input type="submit" value="Patch"
+			name="patchbtn" id="start_submit" class="btn btn-default"/>
+			<input type="submit" value="Restore"
+			name="restorebtn" id="start_submit" class="btn btn-default"/>
+			<button type="reset" class="btn btn-default">Reset Button</button>
+			<input type="submit" value="Reservation patch"
+			name="reservationbtn" id="start_submit" class="btn btn-warning"/>
+			<input type="submit" value="Check Update" name="checkupdatebtn" class="btn btn-default"/>
+			<form method="get">
+			</div>
+
+			<ul class="messages"> 
+			<div class="alert alert-success alert-block toggle">
+				<strong>Checked OS: </strong> {{ distribution }}
+			</div>
+			<div class="alert alert-info">
+				<strong>Message:</strong> {{ stdmsg }} 
+			</div>
+			<!--div class="alert alert-warning">
+				<strong>Warning!</strong> Best check yo self, you're not looking too good.
+			</div>
+			<div class="alert alert-danger">
+				<strong>Oh snap!</strong> Change a few things up and try submitting again.
+			</div-->
+			</ul>
+		<!--/form-->
+
+	</div>
+	<div class="col-lg-6">
+		<!--form method="GET"-->
+		  <form role="form">
+			<div class="form-group">
+				<label>Log</label>
+				<textarea class="form-control" rows="10">{{ strresult }}</textarea>
+			</div>
+			<!--div class="form-group">
+				<label>Package Name</label>
+				<input class="form-control" placeholder="Enter text " name="pkgname">
+				<p class="help-block">Select Host first, and input Package Name for compare version</p>
+			</div-->
+			<!--div class="form-group">
+				<label>Check Device OS</label>
+				<label class="radio-inline">
+					<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>CentOS
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">Ubuntu
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline3" value="option3">Fedora
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="optionsRadiosInline" id="optionsRadiosInline4" value="option3">Suse
+				</label>
+			</div-->
+				<p class="help-block">Please setting up first, after compare package version</p>
+				<input type="submit" value="compare package version" name="comparepkgverbtn" class="btn btn-default"/>
+			</div>
+		  </form>
+        </form>
+	</div>
+</div>
+{% endblock sb_admin_content %}

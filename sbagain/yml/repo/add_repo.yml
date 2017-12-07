@@ -1,0 +1,27 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add pms repo for centos 6.7
+    yum_repository:
+      name: pms_centos
+      description: pms yum repo
+      baseurl: http://192.168.7.52/repo
+      async: 0
+
+#  - name: add pms repo for ubuntu 
+#    apt_repository: 
+#      repo: 'ppa:developmentseed/mapbox' state=present update_cache=yes
+#      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+#      async: 0
+#      name: pms_centos    
+#      apt-key: keyserver=keyserver.ubuntu.com id=BC19DDBA
+
+#  - name: add pms repo for ubuntu
+#    apt_repository: repo='deb http://ubuntu-cloud.archive.canonical.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release }}-updates/liberty main' state=present    
+  - apt_key: url=http://nginx.org/keys/nginx_signing.key state=present 
+  - apt_repository: repo='deb deb http://nginx.org/packages/mainline/ubuntu/ xenial nginx' state=present filename='nginx' update_cache='yes'
+  - apt: name='nginxx' state='present' update_cache='yes'

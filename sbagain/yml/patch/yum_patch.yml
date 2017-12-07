@@ -1,0 +1,19 @@
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: Install Multiple Packages
+      yum: name={{item}} state=latest
+      with_items:
+        - vim
+        - ntp
+        - wget
+        - unzip
+        - vsftpd
+        - udev
+        - xkeyboard-config
+        - gmp
+        - efibootmgr
+        - crda

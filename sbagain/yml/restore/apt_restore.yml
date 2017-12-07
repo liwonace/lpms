@@ -1,0 +1,16 @@
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+    - name: apt downgrade
+      #yum: name={{item}} state=downgrade
+      command: > 
+        yum downgrade
+          -y
+          udev
+          xkeyboard-config
+          gmp
+          efibootmgr
+          crda

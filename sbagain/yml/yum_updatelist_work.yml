@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: yum list test
+      yum: 
+        list: installed
+      register: yum_packages
+
+    - debug: 
+        var: yum_packages

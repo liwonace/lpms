@@ -1,0 +1,8 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+  - name: install pkg
+    yum: name=xfsprogs.x86_64 state=installed
+#- name: start nginx
+#   service: name=nginx state=running enabled=yes

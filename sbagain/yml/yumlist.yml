@@ -1,0 +1,13 @@
+---
+- hosts: all
+  become: True
+  user: root
+  connection: ssh # or paramiko
+  
+  tasks:
+    - name: yum list test
+      yum: 
+        list: ansible
+      register: result
+
+    - debug: msg="{{ result.stdout }}"

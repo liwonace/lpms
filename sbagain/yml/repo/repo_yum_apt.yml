@@ -1,0 +1,36 @@
+---
+- hosts: 192.168.7.221
+  become: True
+  user: root
+  connection: ssh # or paramiko
+
+  tasks:
+  - name: add Mapbox repo
+    apt_repository: repo='ppa:developmentseed/mapbox' state=present update_cache=yes
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+    async: 0
+
+  - name: Add repository
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      async: 0
+
+  - name: Add multiple repositories into the same file (1/2)
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      file: external_repos
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+      gpgcheck: no
+
+  - name: Add multiple repositories into the same file (2/2)
+    yum_repository:
+      name: rpmforge
+      description: RPMforge YUM repo
+      file: external_repos
+      baseurl: http://apt.sw.be/redhat/el7/en/$basearch/rpmforge
+      mirrorlist: http://mirrorlist.repoforge.org/el6/mirrors-rpmforge
+      enabled: no
+

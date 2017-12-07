@@ -1,0 +1,26 @@
+---
+- hosts: all 
+  become: True
+  user: root
+
+  vars:
+    interface: ${ansible_default_ipv4.interface}
+    interface2: ${ansible_default_ipv4.alias}
+    ipaddr: ${ansible_default_ipv4.address}
+
+  tasks:
+  - name: Install packages
+    apt: name=$item state=latest
+    with_items:
+     - vnstat
+
+  - name: Set up vnstat config file
+    template: src=config/vnstat.conf.in dest=/etc/vnstat.conf mode=0755 owner=root group=root
+    notify: restart vnstat
+
+  - name: Ininitalize vnstat
+    command: sudo vnstat -u -i $interface
+
+  handlers:
+    - name: restart vnstat
+      action: service name=vnstat state=restarted
